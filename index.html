@@ -158,6 +158,10 @@ select:focus-visible,.seg button:focus-visible,.cta:focus-visible,.pillbtn:focus
 .colorchip .cn{font-family:'Jua',sans-serif;font-size:12.5px;letter-spacing:.3px;color:var(--ink);}
 .colorchip-row.sub .colorchip{padding:7px 13px;opacity:.85;}
 .colorchip-row.sub .sw{width:16px;height:16px;}
+.cb-tier{font-size:11px;letter-spacing:.3px;color:var(--ink-faint);margin:2px 0 8px;text-align:center;}
+.colorchip-row.primary .colorchip{padding:11px 18px;border-width:1.5px;}
+.colorchip-row.primary .sw{width:24px;height:24px;}
+.colorchip-row.secondary{margin-top:4px;}
 .store-note{margin-top:18px;background:var(--card-soft);border-radius:14px;padding:12px 14px;font-size:13.5px;text-align:center;color:var(--ink);}
 
 .chiprow{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;}
@@ -305,7 +309,10 @@ details.whybox[open] summary .chev{transform:rotate(180deg);}
   <div class="card best-wrap">
     <div class="eyebrow" style="justify-content:center;">나에게 어울리는 오행 컬러</div>
     <div class="cb-label" id="cbMainLabel"></div>
-    <div class="colorchip-row" id="colorChipsMain"></div>
+    <div class="cb-tier">대표 컬러</div>
+    <div class="colorchip-row primary" id="colorChipsPrimary"></div>
+    <div class="cb-tier" id="cbSecondaryTier">함께 쓰기 좋은 컬러</div>
+    <div class="colorchip-row secondary" id="colorChipsSecondary"></div>
     <div class="cb-label sub" id="cbSubLabel"></div>
     <div class="colorchip-row sub" id="colorChipsSub"></div>
     <div class="store-note" id="storeNote"></div>
@@ -422,35 +429,35 @@ const EL_NAME = {목:'목(木)',화:'화(火)',토:'토(土)',금:'금(金)',수
 
 const ELINFO = {
   목:{key:'wood',hangul:'목',hanja:'木',animal:'사슴',animalWord:'사슴',css:'wood',
-    colors:[{name:'그린',en:'GREEN',hex:'#7E9B64'},{name:'연두',en:'LIGHT GREEN',hex:'#A8C48A'}],
+    colors:[{name:'그린',en:'GREEN',hex:'#7E9B64'},{name:'연두',en:'LIGHT GREEN',hex:'#A8C48A'}], primaryCount:1,
     materials:['우드(원목)','린넨','라탄','패브릭'],
     items:['그린 비즈 키링','연두 라탄 파우치','잎사귀 자수 손수건','그린 니트 양말','연두 머리핀'],
     accessories:['그린 비즈 팔찌','잎사귀 모티프 귀걸이','우드 비즈 목걸이'],
     prescribe:'뻗어나갈 수 있는 유연한 성장의 기운을 더해주면 좋아요.',
     materialVibe:'가볍고 자연스러운 소재', emoji:'🌿'},
   화:{key:'fire',hangul:'화',hanja:'火',animal:'여우',animalWord:'여우',css:'fire',
-    colors:[{name:'빨강',en:'RED',hex:'#C8705A'},{name:'분홍',en:'PINK',hex:'#D98C93'}],
+    colors:[{name:'빨강',en:'RED',hex:'#C2503B'},{name:'분홍',en:'PINK',hex:'#D98C93'}], primaryCount:1,
     materials:['벨벳','실크','가죽','울'],
     items:['레드 복주머니','핑크 파우치','벨벳 헤어핀','플레임 자수 손수건','레드 체크 니트 양말'],
     accessories:['레드 포인트 귀걸이','핑크 비즈 팔찌','하트 모티프 목걸이'],
     prescribe:'식었던 기운에 따뜻한 온기와 생기를 더해주면 좋아요.',
     materialVibe:'포근하고 따뜻한 소재', emoji:'🔥'},
   토:{key:'earth',hangul:'토',hanja:'土',animal:'곰',animalWord:'곰',css:'earth',
-    colors:[{name:'황토',en:'OCHER',hex:'#B9863E'},{name:'노랑',en:'YELLOW',hex:'#D9AE4E'}],
+    colors:[{name:'황토',en:'OCHER',hex:'#B9863E'},{name:'노랑',en:'YELLOW',hex:'#D9AE4E'}], primaryCount:2,
     materials:['세라믹','가죽','코튼','황동'],
     items:['황토색 파우치','황동 키링','노랑 복주머니','황토색 니트 양말','도자기 미니 소품'],
     accessories:['황동 체인 목걸이','우드 비즈 팔찌','자연석 반지'],
     prescribe:'여기저기 흩어진 기운을 중심 잡아 안정시켜주면 좋아요.',
     materialVibe:'묵직하고 편안한 소재', emoji:'🏡'},
   금:{key:'metal',hangul:'금',hanja:'金',animal:'양',animalWord:'양',css:'metal',
-    colors:[{name:'화이트',en:'WHITE',hex:'#F7F3EA',border:true},{name:'그레이',en:'GREY',hex:'#ACA398'}],
+    colors:[{name:'화이트',en:'WHITE',hex:'#F7F3EA',border:true},{name:'그레이',en:'GREY',hex:'#ACA398'}], primaryCount:1,
     materials:['실버','리넨','코튼','유리'],
     items:['화이트 파우치','실버 키링','그레이 머플러','화이트 니트 양말','유리 미니 소품'],
     accessories:['실버 체인 목걸이','펄 귀걸이','화이트 비즈 팔찌'],
     prescribe:'느슨해진 기운을 단단하게 다듬고 정리해주면 좋아요.',
     materialVibe:'깔끔하고 시원한 소재', emoji:'🤍'},
   수:{key:'water',hangul:'수',hanja:'水',animal:'고래',animalWord:'고래',css:'water',
-    colors:[{name:'하늘색',en:'SKY BLUE',hex:'#8FB8D9'},{name:'남색',en:'NAVY',hex:'#3C5878'},{name:'검정',en:'BLACK',hex:'#2E2A24'}],
+    colors:[{name:'검정',en:'BLACK',hex:'#2A2620'},{name:'남색',en:'NAVY',hex:'#3C5878'},{name:'하늘색',en:'SKY BLUE',hex:'#8FB8D9'}], primaryCount:1,
     materials:['데님','실크','메탈','글라스'],
     items:['하늘색 복주머니','고래 키링','네이비 파우치','하늘색 니트 양말','블랙 가방 소품'],
     accessories:['하늘색 비즈 팔찌','물방울 펜던트 목걸이','실버 체인 링'],
@@ -857,6 +864,9 @@ function makeBadge(elKey, size, big){
 function chipHtml(c, small){
   return '<span class="colorchip"><span class="sw" style="background:'+c.hex+';'+(c.border?'border-color:var(--line);box-shadow:none;':'')+'"></span><span class="cn">'+c.en+'</span></span>';
 }
+function chipHtmlPrimary(c, elCss){
+  return '<span class="colorchip" style="background:var(--el-'+elCss+'-soft);border-color:var(--el-'+elCss+');"><span class="sw" style="background:'+c.hex+';'+(c.border?'border-color:var(--line);box-shadow:none;':'')+'"></span><span class="cn">'+c.en+'</span></span>';
+}
 
 const FLOW_LABELS = [
   {key:'strong', label:'강하게 작용하는 기운'},
@@ -886,7 +896,12 @@ function render(r){
   document.getElementById('yongFootnote').textContent = '오행의 개수가 아니라 월령·통근·천간 투간, 지지의 합·충 관계, 조후와 억부를 함께 살펴본 결과예요.';
 
   document.getElementById('cbMainLabel').textContent = (high?'나를 돕는 ':'나에게 어울리는 ')+mainInfo.hangul+'('+mainInfo.hanja+') 계열';
-  document.getElementById('colorChipsMain').innerHTML = mainInfo.colors.map(c=>chipHtml(c)).join('');
+  const mainPrimary = mainInfo.colors.slice(0, mainInfo.primaryCount);
+  const mainSecondary = mainInfo.colors.slice(mainInfo.primaryCount);
+  document.getElementById('colorChipsPrimary').innerHTML = mainPrimary.map(c=>chipHtmlPrimary(c, mainInfo.css)).join('');
+  document.getElementById('colorChipsSecondary').innerHTML = mainSecondary.map(c=>chipHtml(c)).join('');
+  document.getElementById('cbSecondaryTier').hidden = mainSecondary.length===0;
+  document.getElementById('colorChipsSecondary').hidden = mainSecondary.length===0;
   document.getElementById('cbSubLabel').textContent = (high?'함께 쓰면 좋은 ':'함께 활용하기 좋은 ')+subInfo.hangul+'('+subInfo.hanja+') 계열';
   document.getElementById('colorChipsSub').innerHTML = subInfo.colors.map(c=>chipHtml(c)).join('');
   document.getElementById('storeNote').textContent = '오색몽에서는 '+mainInfo.colors.map(c=>c.name).join('·')+' 계열 소품을 찾아보세요!';
